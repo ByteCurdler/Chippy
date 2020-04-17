@@ -1,0 +1,26 @@
+###TODO###
+
++: In the interpreter
+*: Working on it
+(blank): Not implemented
+-: Will not do (yet)
+
+SCHIP
++   hires               00FF
++   lores               00FE
++   scroll-down [x]     00Cx
++   scroll-left         00FC
++   scroll-right        00FB
++   i := bighex V[x]    Fx30
+    exit                00FD
+    saveflags V[x]      Fx75
+    loadflags V[x]      Fx85
+*   Drawing a height 0 sprite draws a 16x16 sprite
+
+XO-CHIP
+	save V[x] - V[y]    5xy2
+	load V[x] - V[y]    5xy3
+	i := long [xxxx]    F000xxxx (4 bytes)
+	plane [x]           Fx01
+	audio               F002
+	scroll-up [x]       00Dx
