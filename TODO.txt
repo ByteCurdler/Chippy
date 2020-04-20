@@ -15,7 +15,8 @@ SCHIP
 +   exit                00FD
     saveflags V[x]      Fx75
     loadflags V[x]      Fx85
-*   Drawing a height 0 sprite draws a 16x16 sprite
+    Flag commands: [x] < 8
++   Drawing a height 0 sprite draws a 16x16 sprite
 
 XO-CHIP
 	save V[x] - V[y]    5xy2

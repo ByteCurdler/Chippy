@@ -33,7 +33,7 @@ class SCHIP:
         for i in range(len(cartdata)):
             self.memory[i + 512] = cartdata[i]
 
-    def cycle(self, delta):
+    def cycle(self, delta, noexit=False):
         # Get Opcode
         opcode = self.memory[self.pc] << 8 | self.memory[self.pc + 1]
         ophex = "{:0>4}".format(hex(opcode)[2:]).upper()
@@ -54,8 +54,9 @@ class SCHIP:
             self.pc = self.stack.pop() - 2
         elif ophex == "00E0":
             # 00FD: Exit
-            self.pc -= 2
-            return "exit"
+            if not noexit:
+                self.pc -= 2
+                return "exit"
         elif ophex == "00FE":
             # 00FF: Set low resolution
             self.hires = False
