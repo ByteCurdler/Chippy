@@ -1,6 +1,7 @@
 # Chippy #
 
-A CHIP-8 interpreter, based on [Octo](https://johnearnest.github.io/Octo/)
+A CHIP-8 interpreter, similar to [Octo](https://johnearnest.github.io/Octo/)
+All examples except `putchars` and `putbigchars` from [Octo](https://johnearnest.github.io/Octo/)
 
 ## Usage ##
 
@@ -24,3 +25,4 @@ A CHIP-8 interpreter, based on [Octo](https://johnearnest.github.io/Octo/)
     <td>A</td><td>0</td><td>B</td><td>F</td><td></td><td>Z</td><td>X</td><td>C</td><td>V</td>
   </tr>
 </table>
+

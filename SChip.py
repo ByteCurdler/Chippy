@@ -50,8 +50,12 @@ class SCHIP:
         elif ophex == "00EE":
             # 00EE: Return from subroutine
             if len(self.stack) == 0:
-                raise CHIP8Error(f"Return at {hex(self.pc)} has nowhere to go")
+                raise SCHIPError(f"Return at {hex(self.pc)} has nowhere to go")
             self.pc = self.stack.pop() - 2
+        elif ophex == "00E0":
+            # 00FD: Exit
+            self.pc -= 2
+            return "exit"
         elif ophex == "00FE":
             # 00FF: Set low resolution
             self.hires = False
@@ -70,7 +74,7 @@ class SCHIP:
         elif re.fullmatch("2...", ophex):
             # 2nnn: Call subroutine at [nnn]
             if len(self.stack) == 16:
-                raise CHIP8Error(f"Stack is full, cannot call subroutine")
+                raise SCHIPError(f"Stack is full, cannot call subroutine")
             self.stack.append(self.pc + 2)
             self.pc = int(ophex[1:],16) - 2
         elif re.fullmatch("3...", ophex):

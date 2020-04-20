@@ -79,7 +79,9 @@ try:
             #opcode = c.memory[c.pc] << 8 | c.memory[c.pc + 1]
             #print("Registers: %s" % " ".join([str(i) for i in c.V]))
             #input(f"I: {hex(c.I)}\tPC: {hex(c.pc)}\tOphex: {hex(opcode)}")
-        c.cycle(clock.tick(FPS)/1000)
+        ret = c.cycle(clock.tick(FPS)/1000)
+        if ret == "exit":
+            raise KeyboardInterrupt()
         if c.drawFlag:
             c.drawFlag = False
             draw(c, win)

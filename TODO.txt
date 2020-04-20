@@ -12,7 +12,7 @@ SCHIP
 +   scroll-left         00FC
 +   scroll-right        00FB
 +   i := bighex V[x]    Fx30
-    exit                00FD
++   exit                00FD
     saveflags V[x]      Fx75
     loadflags V[x]      Fx85
 *   Drawing a height 0 sprite draws a 16x16 sprite
