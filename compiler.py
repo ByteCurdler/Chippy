@@ -1,13 +1,15 @@
-import argparse
+import argparse, os, random
 parser = argparse.ArgumentParser()
 method = parser.add_mutually_exclusive_group(required=True)
 method.add_argument("-c", "--compiled", action="store_true",
                     help="Put already-compiled code from Octo in a file")
-# method.add_argument("-o", "--octocode",
-                    # help="Compile Octocode to a file")
+method.add_argument("-o", "--octocode",
+                    help="Compile Octocode .8o to a file")
 parser.add_argument("output",
                     help="File to put output in")
 args = parser.parse_args()
+
+args.output = args.output + ("" if "." in args.output else ".ch8")
 
 if args.compiled:
     code = input("Please enter the compiled code: ")
@@ -17,7 +19,20 @@ if args.compiled:
     code = [int(i, 16) for i in code]
     code = bytes(code)
     print("Writing to file...")
-    f = open(args.output + ("" if "." in args.output else ".ch8"), "wb+")
+    f = open(args.output, "wb+")
     f.write(code)
     f.close()
-    print("Done!")
+elif args.octocode:
+    print("Reading .8o file...")
+    with open(args.octocode) as f:
+        code = f.read().lstrip("\uffef")
+    tmpFile = f".tmp_octocode_{str(random.randint(0,999999)).rjust(6, '0')}"
+    with open(tmpFile, "w+") as f:
+        f.write(code)
+    print("Running Octo compiler...")
+    os.system(
+        os.path.dirname(os.path.realpath(__file__)) +
+        f"/octo-compiler/octo {tmpFile} {args.output}"
+    )
+    os.remove(tmpFile)
+print("Done!")
