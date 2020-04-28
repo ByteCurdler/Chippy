@@ -159,19 +159,19 @@
     i += tmp5
     load tmp0
     if tmp0 == tmp1 begin
-      i := before-guess      # Delete if repeated digits blocked
-      i += tmp5              # Delete if repeated digits blocked
-      load tmp1              # Delete if repeated digits blocked
-      i := num              # Delete if repeated digits blocked
-      i += tmp5              # Delete if repeated digits blocked
-      load tmp0              # Delete if repeated digits blocked
-      if tmp0 != tmp1 begin  # Delete if repeated digits blocked
+      i := before-guess      # Delete if repeated digits blocked from input
+      i += tmp5              # Delete if repeated digits blocked from input
+      load tmp1              # Delete if repeated digits blocked from input
+      i := num               # Delete if repeated digits blocked from input
+      i += tmp5              # Delete if repeated digits blocked from input
+      load tmp0              # Delete if repeated digits blocked from input
+      if tmp0 != tmp1 begin  # Delete if repeated digits blocked from input
         tmp3 += 1
         ;
-      end                    # Delete if repeated digits blocked
-      i := before-guess      # Delete if repeated digits blocked
-      i += tmp4              # Delete if repeated digits blocked
-      load tmp1              # Delete if repeated digits blocked
+      end                    # Delete if repeated digits blocked from input
+      i := before-guess      # Delete if repeated digits blocked from input
+      i += tmp4              # Delete if repeated digits blocked from input
+      load tmp1              # Delete if repeated digits blocked from input
     end
     tmp5 += 1
   again
