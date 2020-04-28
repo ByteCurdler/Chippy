@@ -1,12 +1,5 @@
 import random, re
 
-try:
-    import better_exceptions as b_e
-    import sys
-    sys.excepthook = b_e.excepthook
-except ImportError:
-    pass
-
 #4x5, 8x10 hex fontset
 from fontset import fontset
 
