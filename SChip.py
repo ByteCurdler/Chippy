@@ -1,6 +1,13 @@
 import random, re
 
-#4x5 hex fontset
+try:
+    import better_exceptions as b_e
+    import sys
+    sys.excepthook = b_e.excepthook
+except ImportError:
+    pass
+
+#4x5, 8x10 hex fontset
 from fontset import fontset
 
 class SCHIPError(Exception):
@@ -8,6 +15,7 @@ class SCHIPError(Exception):
 
 class SCHIP:
     def __init__(self, cartdata=bytes()):
+        self.type = "SCHIP"
         self.memory = bytearray(4096)
         self.V = bytearray(16)
         self.I = 0
@@ -26,6 +34,8 @@ class SCHIP:
         self.keypress_tmp = set()
         
         self.hires = False
+        
+        self.flags = bytearray(8)
 
         for i in range(len(fontset)):
             self.memory[i + 80] = fontset[i]
@@ -246,6 +256,20 @@ class SCHIP:
             # Fx65: Load memory into V0..V[x], starting at I
             for i in range(int(ophex[1],16)+1):
                 self.V[i] = self.memory[self.I + i]
+            self.I += int(ophex[1],16)+1
+        elif re.fullmatch("F.75", ophex):
+            # Fx75: Dump V0..V[x] into flag memory, starting at I
+            if int(ophex[1],16) >= 8:
+                raise CHIP8Error(f"Flag index to high: {int(ophex[1],16)}")
+            for i in range(int(ophex[1],16)+1):
+                self.flags[i] = self.V[i]
+            self.I += int(ophex[1],16)+1
+        elif re.fullmatch("F.85", ophex):
+            # Fx85: Load flag memory into V0..V[x<8], starting at I
+            if int(ophex[1],16) >= 8:
+                raise CHIP8Error(f"Flag index to high: {int(ophex[1],16)}")
+            for i in range(int(ophex[1],16)+1):
+                self.V[i] = self.flags[i]
             self.I += int(ophex[1],16)+1
         elif ophex == "00FB":
             # 00FB: Scroll the display right 4 pixels

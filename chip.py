@@ -3,6 +3,7 @@ class CHIP8Error(Exception):
 
 class CHIP8:
     def __init__(self, cartdata=bytes()):
+        self.type = "CHIP8"
         self.memory = bytearray(4096)
         self.V = bytearray(16)
         self.I = 0

@@ -1,7 +1,7 @@
 # Chippy #
 
 A CHIP-8 interpreter, similar to [Octo](https://johnearnest.github.io/Octo/)
-All examples except `putchars` and `putbigchars` from [Octo](https://johnearnest.github.io/Octo/)
+Most examples from [Octo](https://johnearnest.github.io/Octo/)
 
 ## Usage ##
 

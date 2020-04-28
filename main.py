@@ -1,6 +1,12 @@
 #!/usr/bin/env python3
+try:
+    import better_exceptions as b_e
+    import sys
+    sys.excepthook = b_e.excepthook
+except ImportError:
+    pass
 
-import pygame, re, sys, random
+import pygame, re, sys, random, os, pickle
 import pygame.locals as plocals
 
 if len(sys.argv) > 1:
@@ -74,6 +80,12 @@ draw(c, win)
 clock = pygame.time.Clock()
 buzz = pygame.mixer.Sound("buzzer.wav")
 buzz_playing = False
+if c.type in ["SCHIP", "XO-CHIP"]:
+    if os.path.isfile("flags.pkl"):
+        flags = pickle.load(open("flags.pkl", "rb"))
+    else:
+        flags = bytearray(8)
+    c.flags = flags
 try:
     while True:
         for _ in range(TPF-1):
@@ -105,7 +117,8 @@ try:
                 raise KeyboardInterrupt()
 except CHIP8Error as e:
     sys.stderr.write("CHIP-8 Error: " + str(e) + "\n")
-    pygame.quit()
 except KeyboardInterrupt:
     print("Goodbye!")
-    pygame.quit()
+pygame.quit()
+if c.type in ["SCHIP", "XO-CHIP"]:
+    pickle.dump(c.flags, open("flags.pkl", "wb+"))

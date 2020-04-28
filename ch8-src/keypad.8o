@@ -1,0 +1,66 @@
+﻿:alias vkey v1
+:alias x v2
+:alias y v3
+:alias vx v4
+:alias vy v5
+:alias row v6
+:alias one v7
+
+: main
+	loadflags vkey
+	v2 := 30
+	v3 := 14
+	v4 := 1
+	v6 := 10
+	v7 := 20
+	loop
+		clear
+		hexpad
+		vkey := key
+		saveflags vkey
+	again
+
+: hexpad-vars
+	v8 := 0
+	x := 18
+	y := 1
+	vx := 7
+	vy := 8
+	row := 4
+	one := 1
+	;
+
+: hexpad
+	hexpad-vars
+	loop
+		i := order
+		i += v8
+		load v0
+		i := hex v0
+		sprite x y 5
+		if v0 == vkey begin
+			x -= one
+			y -= one
+			i := outline
+			sprite x y 7
+			x += one
+			y += one
+		end
+		v8 += one
+		x += vx
+		row -= one
+		if row == 0 begin
+			x := 18
+			y += vy
+			row := 4
+		end
+		if v8 != 16 then
+	again
+	;
+
+: outline 0xFC 0x84 0x84 0x84 0x84 0x84 0xFC
+
+: order 0x1 0x2 0x3 0xC
+				0x4 0x5 0x6 0xD
+				0x7 0x8 0x9 0xE
+				0xA 0x0 0xB 0xF

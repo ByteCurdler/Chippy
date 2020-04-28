@@ -5,7 +5,7 @@
 (blank): Not implemented
 -: Will not do (yet)
 
-SCHIP
+SCHIP: Done!
 +   hires               00FF
 +   lores               00FE
 +   scroll-down [x]     00Cx
@@ -13,9 +13,9 @@ SCHIP
 +   scroll-right        00FB
 +   i := bighex V[x]    Fx30
 +   exit                00FD
-    saveflags V[x]      Fx75
-    loadflags V[x]      Fx85
-    Flag commands: [x] < 8
++   saveflags V[x]      Fx75
++   loadflags V[x]      Fx85
++   Flag commands: [x] < 8
 +   Drawing a height 0 sprite draws a 16x16 sprite
 
 XO-CHIP

@@ -1,276 +1,290 @@
 #############################
-#														#
-#       Bulls and Cows				#
-#  ***********************	#
-#														#
-#    Scores the classic			#
-#  game of Bulls and Cows,	#
-#  aka. Mastermind					#
-#														#
-#         Playing					#
-#  ***********************	#
-#														#
-#    [wip]
-#
+#                           #
+#       Bulls and Cows      #
+#  ***********************  #
+#                           #
+#    Scores the classic     #
+#  game of Bulls and Cows,  #
+#  aka. Mastermind          #
+#                           #
+#         Playing           #
+#  ***********************  #
+#                           #
+#    Once started, you will #
+#  be shown a cursor. Type  #
+#  in your guess there. It  #
+#  will then show you the   #
+#  results:                 #
+#   Bull: right number,     #
+#         right spot        #
+#   Cow:  right number,     #
+#         wrong spot        #
+#                           #
+#    The goal is to guess   #
+#  the hidden number. The   #
+#  number will not have     #
+#  duplicate digits.        #
+#                           #
+#         Have Fun!         #
 #############################
 
-:alias tmp0		v0
-:alias tmp1		v1
-:alias tmp2		v2
-:alias tmp3		v3
-:alias tmp4		v4
-:alias tmp5		v5
+:alias tmp0    v0
+:alias tmp1    v1
+:alias tmp2    v2
+:alias tmp3    v3
+:alias tmp4    v4
+:alias tmp5    v5
 
 :macro printdigit V X Y {
-	tmp1 := X
-	tmp2 := Y
-	i := hex V
-	sprite tmp1 tmp2 5
+  tmp1 := X
+  tmp2 := Y
+  i := hex V
+  sprite tmp1 tmp2 5
 }
 
 :macro shiftload L S {
-	i := L
-	tmp0 := S
-	i += tmp0
-	load tmp0
+  i := L
+  tmp0 := S
+  i += tmp0
+  load tmp0
 }
 
 :macro printnum {
-	shiftload num 0
-	printdigit tmp0 1 1
-	shiftload num 1
-	printdigit tmp0 6 1
-	shiftload num 2
-	printdigit tmp0 11 1
-	shiftload num 3
-	printdigit tmp0 16 1
+  shiftload num 0
+  printdigit tmp0 1 1
+  shiftload num 1
+  printdigit tmp0 6 1
+  shiftload num 2
+  printdigit tmp0 11 1
+  shiftload num 3
+  printdigit tmp0 16 1
 }
 
 : main
-	save-num
-	#:breakpoint lookatnum
-	loop
-		clear
-		#printnum
-		get-guess
-		score-guess
-		show-result
-		tmp3 := 60
-		wait
-		if tmp2 != 4 then #Did not win?
-	again
-	win
-	
+  save-num
+  #:breakpoint lookatnum
+  loop
+    clear
+    #printnum
+    get-guess
+    score-guess
+    show-result
+    tmp3 := 60
+    wait
+    if tmp2 != 4 then #Did not win?
+  again
+  win
+  
 : save-num
-	gen-num
-	i := num
-	save tmp3
-	;
+  gen-num
+  i := num
+  save tmp3
+  ;
 
 : wait #tmp3
-	delay := tmp3
-	loop
-		tmp3 := delay
-		if tmp3 != 0 then
-	again
-	;
+  delay := tmp3
+  loop
+    tmp3 := delay
+    if tmp3 != 0 then
+  again
+  ;
 
 : gen-num
-	:macro newdigit X {
-		X := random 15
-	}
-	:macro redoeq X Y {
-		if X == Y then gen-num
-	}
-	newdigit tmp0
-	newdigit tmp1
-	newdigit tmp2
-	newdigit tmp3
-	redoeq tmp0 tmp1
-	redoeq tmp0 tmp2
-	redoeq tmp0 tmp3
-	redoeq tmp1 tmp2
-	redoeq tmp1 tmp3
-	redoeq tmp2 tmp3
-	;
+  :macro newdigit X {
+    X := random 15
+  }
+  :macro redoeq X Y {
+    if X == Y then gen-num
+  }
+  newdigit tmp0
+  newdigit tmp1
+  newdigit tmp2
+  newdigit tmp3
+  redoeq tmp0 tmp1
+  redoeq tmp0 tmp2
+  redoeq tmp0 tmp3
+  redoeq tmp1 tmp2
+  redoeq tmp1 tmp3
+  redoeq tmp2 tmp3
+  ;
 
 : num
 0 0 0 0
 
 : get-guess
-	tmp1 := 20	# X pos
-	tmp2 := 10	# Y pos
-	tmp3 := 6		# X offset
-	tmp4 := 0		# Digit #
-	tmp5 := 1		# One
-	:macro getdigit {
-		i := cursor
-		sprite tmp1 tmp2 5
-		tmp0 := key
-		sprite tmp1 tmp2 5
-		i := hex tmp0
-		sprite tmp1 tmp2 5
-		tmp1 += tmp3
-		i := guess
-		i += tmp4
-		save tmp0
-		tmp4 += tmp5
-	}
-	getdigit getdigit getdigit getdigit
-	# TODO: no repetition of digits
-	#:breakpoint guess
+  tmp1 := 20  # X pos
+  tmp2 := 10  # Y pos
+  tmp3 := 6    # X offset
+  tmp4 := 0    # Digit #
+  tmp5 := 1    # One
+  :macro getdigit {
+    i := cursor
+    sprite tmp1 tmp2 5
+    tmp0 := key
+    sprite tmp1 tmp2 5
+    i := hex tmp0
+    sprite tmp1 tmp2 5
+    tmp1 += tmp3
+    i := guess
+    i += tmp4
+    save tmp0
+    tmp4 += tmp5
+  }
+  getdigit getdigit getdigit getdigit
+  # TODO: no repetition of digits
+  #:breakpoint guess
 :next before-guess
-	;
+  ;
 : guess
-	0 0 0 0
+  0 0 0 0
 
 : checkdigit
-	#:breakpoint score-guess
-	i := before-guess
-	i += tmp4
-	load tmp1
-	i := num
-	i += tmp4
-	load tmp0
-	tmp4 += 1
-	# Is a bull?
-	if tmp0 == tmp1 begin
-		tmp2 += 1
-		;
-	end
-	# Is a cow?
-	tmp5 := 0
-	loop while tmp5 != 4
-		i := num
-		i += tmp5
-		load tmp0
-		if tmp0 == tmp1 begin
-			i := before-guess			# Delete if repeated digits blocked
-			i += tmp5							# Delete if repeated digits blocked
-			load tmp1							# Delete if repeated digits blocked
-			i := num							# Delete if repeated digits blocked
-			i += tmp5							# Delete if repeated digits blocked
-			load tmp0							# Delete if repeated digits blocked
-			if tmp0 != tmp1 begin	# Delete if repeated digits blocked
-				tmp3 += 1
-				;
-			end										# Delete if repeated digits blocked
-			i := before-guess			# Delete if repeated digits blocked
-			i += tmp4							# Delete if repeated digits blocked
-			load tmp1							# Delete if repeated digits blocked
-		end
-		tmp5 += 1
-	again
-	
-	;
+  #:breakpoint score-guess
+  i := before-guess
+  i += tmp4
+  load tmp1
+  i := num
+  i += tmp4
+  load tmp0
+  tmp4 += 1
+  # Is a bull?
+  if tmp0 == tmp1 begin
+    tmp2 += 1
+    ;
+  end
+  # Is a cow?
+  tmp5 := 0
+  loop while tmp5 != 4
+    i := num
+    i += tmp5
+    load tmp0
+    if tmp0 == tmp1 begin
+      i := before-guess      # Delete if repeated digits blocked
+      i += tmp5              # Delete if repeated digits blocked
+      load tmp1              # Delete if repeated digits blocked
+      i := num              # Delete if repeated digits blocked
+      i += tmp5              # Delete if repeated digits blocked
+      load tmp0              # Delete if repeated digits blocked
+      if tmp0 != tmp1 begin  # Delete if repeated digits blocked
+        tmp3 += 1
+        ;
+      end                    # Delete if repeated digits blocked
+      i := before-guess      # Delete if repeated digits blocked
+      i += tmp4              # Delete if repeated digits blocked
+      load tmp1              # Delete if repeated digits blocked
+    end
+    tmp5 += 1
+  again
+  
+  ;
 
-: bull	0x84 0xCC 0xB4 0xFC 0xFC
-: cow		0x78 0xFC 0xB4 0xCC 0xFC
+: bull  0x84 0xCC 0xB4 0xFC 0xFC
+: cow    0x78 0xFC 0xB4 0xCC 0xFC
 
 : score-guess
-	#tmp0: num, tmp1: guess
-	tmp2 := 0		# Bulls (correct pos)
-	tmp3 := 0		# Cows (incorrect pos)
-	tmp4 := 0		# Digit #
-	checkdigit checkdigit checkdigit checkdigit
-	#:breakpoint scored-guess
-	;
+  #tmp0: num, tmp1: guess
+  tmp2 := 0    # Bulls (correct pos)
+  tmp3 := 0    # Cows (incorrect pos)
+  tmp4 := 0    # Digit #
+  checkdigit checkdigit checkdigit checkdigit
+  #:breakpoint scored-guess
+  ;
 
 : show-result
-	:macro dispRow TMP X Y VX {
-		tmp0 := TMP		# Count
-		tmp1 := X
-		tmp4 := Y
-		tmp5 := 1
-		loop while tmp0 != 0
-			sprite tmp1 tmp4 5
-			tmp1 += VX
-			tmp0 -= tmp5
-		again
-	}
-	i := bull
-	dispRow tmp2 18 20 7
-	i := cow
-	dispRow tmp3 18 26 7
-	;
-			
+  :macro dispRow TMP X Y VX {
+    tmp0 := TMP    # Count
+    tmp1 := X
+    tmp4 := Y
+    tmp5 := 1
+    loop while tmp0 != 0
+      sprite tmp1 tmp4 5
+      tmp1 += VX
+      tmp0 -= tmp5
+    again
+  }
+  i := bull
+  dispRow tmp2 18 20 7
+  i := cow
+  dispRow tmp3 18 26 7
+  ;
+      
 : cursor
-	0x80 0x80 0x80 0x80 0x80
+  0x80 0x80 0x80 0x80 0x80
 
 : win
-	tmp1 := 48
-	tmp2 := 8
-	tmp4 := 0
-	tmp5 := 1
-	loop
-		clear
-		# Winner Winner
-		i := winner1
-		ve := 2
-		sprite ve tmp5 0
-		i := winner2
-		ve := 18
-		sprite ve tmp5 0
-		i := winner1
-		ve := 40
-		sprite ve tmp5 0
-		i := winner2
-		ve := 56
-		sprite ve tmp5 0
-		# Chicken
-		i := chicken2
-		if tmp4 == 1 then
-			i := chicken1
-			
-		sprite tmp1 tmp2 0
-		tmp1 -= tmp5
-		if tmp4 != 0 begin
-			tmp4 := 0
-		else
-			tmp4 := 1
-		end
-		# Dinner
-		vd := 26
-		i := dinner1
-		ve := 22
-		sprite ve vd 0
-		i := dinner2
-		ve := 38
-		sprite ve vd 0
-		tmp3 := 10
-		wait
-	again
-	
+  tmp1 := 48
+  tmp2 := 8
+  tmp4 := 0
+  tmp5 := 1
+  loop
+    clear
+    # Winner Winner
+    i := winner1
+    ve := 2
+    sprite ve tmp5 0
+    i := winner2
+    ve := 18
+    sprite ve tmp5 0
+    i := winner1
+    ve := 40
+    sprite ve tmp5 0
+    i := winner2
+    ve := 56
+    sprite ve tmp5 0
+    # Chicken
+    i := chicken2
+    if tmp4 == 1 then
+      i := chicken1
+      
+    sprite tmp1 tmp2 0
+    tmp1 -= tmp5
+    if tmp4 != 0 begin
+      tmp4 := 0
+    else
+      tmp4 := 1
+    end
+    # Dinner
+    vd := 26
+    i := dinner1
+    ve := 22
+    sprite ve vd 0
+    i := dinner2
+    ve := 38
+    sprite ve vd 0
+    tmp3 := 10
+    wait
+  again
+  
 : winner1
-	0xAA 0x00 0xA8 0x00 0xAA 0xCC 0x52 0xAA
-	0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
-	0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
-	0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
+  0xAA 0x00 0xA8 0x00 0xAA 0xCC 0x52 0xAA
+  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
+  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
+  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
 
 : winner2
-	0x40 0x00 0xE0 0x00 0x8C 0x00 0x68 0x00
-	0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
-	0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
-	0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
+  0x40 0x00 0xE0 0x00 0x8C 0x00 0x68 0x00
+  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
+  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
+  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
 
 : chicken1
-	0x30 0x00 0x58 0x00 0xF8 0x1C 0x78 0x32
-	0x78 0x69 0x7F 0x94 0x7F 0xD4 0x78 0xE0
-	0x7F 0x60 0x7F 0x60 0x78 0xE0 0x3F 0xC0
-	0x1F 0x80 0x0C 0x80 0x01 0x80 0x00 0x00
+  0x30 0x00 0x58 0x00 0xF8 0x1C 0x78 0x32
+  0x78 0x69 0x7F 0x94 0x7F 0xD4 0x78 0xE0
+  0x7F 0x60 0x7F 0x60 0x78 0xE0 0x3F 0xC0
+  0x1F 0x80 0x0C 0x80 0x01 0x80 0x00 0x00
 : chicken2
-	0x18 0x00 0x2C 0x1C 0x7C 0x32 0x3C 0x39
-	0x3C 0x64 0x3F 0x92 0x7F 0xC8 0x78 0xE0
-	0x7F 0x60 0x7F 0x60 0x78 0xE0 0x3F 0xC0
-	0x1F 0x80 0x05 0x80 0x0C 0x00 0x00 0x00
+  0x18 0x00 0x2C 0x1C 0x7C 0x32 0x3C 0x39
+  0x3C 0x64 0x3F 0x92 0x7F 0xC8 0x78 0xE0
+  0x7F 0x60 0x7F 0x60 0x78 0xE0 0x3F 0xC0
+  0x1F 0x80 0x05 0x80 0x0C 0x00 0x00 0x00
 
 : dinner1
-	0xC8 0x01 0xA0 0x03 0xAB 0x32 0xCA 0xA9
-	0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
-	0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
-	0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
+  0xC8 0x01 0xA0 0x03 0xAB 0x32 0xCA 0xA9
+  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
+  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
+  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
 : dinner2
-	0x00 0x00 0x80 0x00 0x30 0x00 0xA0 0x00
-	0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
-	0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
-	0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
+  0x00 0x00 0x80 0x00 0x30 0x00 0xA0 0x00
+  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
+  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
+  0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00

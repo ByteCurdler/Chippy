@@ -9,7 +9,7 @@ parser.add_argument("output",
                     help="File to put output in")
 args = parser.parse_args()
 
-args.output = args.output + ("" if "." in args.output else ".ch8")
+args.output = args.output + ("" if "." in args.output.split("/")[-1] else ".ch8")
 
 if args.compiled:
     code = input("Please enter the compiled code: ")
@@ -25,7 +25,9 @@ if args.compiled:
 elif args.octocode:
     print("Reading .8o file...")
     with open(args.octocode) as f:
-        code = f.read().lstrip("\uffef")
+        code = f.read()
+        while code[0] > "\ueeee": #Octo sometimes adds strange symbols at the start
+            code = code[1:]
     tmpFile = f".tmp_octocode_{str(random.randint(0,999999)).rjust(6, '0')}"
     with open(tmpFile, "w+") as f:
         f.write(code)
