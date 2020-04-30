@@ -1,0 +1,50 @@
+﻿:alias horz1 v0
+:alias vert1 v1
+:alias horz2 v2
+:alias vert2 v3
+
+
+: main
+	v0 := 0
+	v1 := 0
+	v2 := 57
+	v3 := 0
+	loop
+		# Clear
+		plane 3
+		clear
+		# Input
+		:macro move keyId reg amount {
+			v4 := keyId
+			if v4 key then reg += amount
+		}
+		move 2   vert1 31
+		move 5   vert1 1
+		move 4   horz1 63
+		move 6   horz1 1
+		
+		move 8   vert2 31
+		move 0   vert2 1
+		move 0xA horz2 63
+		move 0xB horz2 1
+		# Draw
+		plane 1
+		i := fg1
+		sprite v0 v1 7
+		plane 2
+		i := fg2
+		sprite v2 v3 7
+		wait
+	again
+: wait
+	vf := 5
+	delay := vf
+	loop
+		vf := delay
+		if vf != 0 then
+	again
+	;
+: fg1
+0x38 0x7E 0xFE 0xFE 0xFE 0x7E 0x38
+: fg2
+0x38 0xFC 0xFE 0xFE 0xFE 0xFC 0x38

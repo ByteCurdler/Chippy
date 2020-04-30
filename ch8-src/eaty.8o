@@ -392,16 +392,17 @@
 	i := life-force-lo
 	draw-pair
 
+	v1 := -10
+	v2 := -12
 	i := part-tiles
 	i += inventory
 	if timer != 0 then i := bighex timer
 	if timer != 0 begin
-		v1 := -12
-		sprite v1 v1 10
+		sprite v1 v2 10
 	else
-		v1 := -10
 		sprite v1 v1 8
 	end
+		
 
 	if roomindex > 4 then return
 	loot-px

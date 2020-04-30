@@ -15,8 +15,10 @@ else:
     print("Usage: %s [filename]" % sys.argv[0])
     sys.exit(1)
 
-ON_COLOR = (205,205,205)
-OFF_COLOR = (50,50,50)
+OFF_COLOR =     ( 20, 50, 80)
+FG1_COLOR =     (100,255,100)
+FG2_COLOR =     (255,100,100)
+BLENDED_COLOR = (255,255,100)
 PIX_SIZE = 20
 TPF = 200 # Ticks per Frame
 FPS = 60 # Frames per Second
@@ -37,7 +39,7 @@ pygame.init()
 win = pygame.display.set_mode((64*PIX_SIZE,32*PIX_SIZE))
 pygame.display.set_caption("Chippy")
 
-from SChip import CHIP8, CHIP8Error
+from XOChip import CHIP8, CHIP8Error
 def printmem(chip):
     for i in range(0, 4096, 16):
         tmp = ""
@@ -46,26 +48,25 @@ def printmem(chip):
         print(tmp)
 
 def draw(chip, win):
-    if "hires" in dir(chip) and chip.hires:
-        for i in range(128*64):
+    hires = chip.type in ["SCHIP", "XO-CHIP"] and chip.hires
+    for i in range(64*32*(4 if hires else 1)):
+        if hires:
             pix_rect = (
                 i%128*(PIX_SIZE/2), i//128*(PIX_SIZE/2),
                 (PIX_SIZE/2), (PIX_SIZE/2)
             )
-            if chip.gfx[i]:
-                pygame.draw.rect(win, ON_COLOR, pix_rect)
-            else:
-                pygame.draw.rect(win, OFF_COLOR, pix_rect)
-    else:
-        for i in range(64*32):
+        else:
             pix_rect = (
                 i%64*PIX_SIZE, i//64*PIX_SIZE,
                 PIX_SIZE, PIX_SIZE
             )
-            if chip.gfx[i]:
-                pygame.draw.rect(win, ON_COLOR, pix_rect)
-            else:
-                pygame.draw.rect(win, OFF_COLOR, pix_rect)
+        if chip.gfx[i]:
+            color = FG1_COLOR
+        else:
+            color = OFF_COLOR
+        if chip.type == "XO-CHIP" and chip.gfx2[i]:
+            color = (FG2_COLOR if color == OFF_COLOR else BLENDED_COLOR)
+        pygame.draw.rect(win, color, pix_rect)
     pygame.display.update()
 
 def loadfile(filename):
@@ -86,6 +87,8 @@ if c.type in ["SCHIP", "XO-CHIP"]:
     else:
         flags = bytearray(8)
     c.flags = flags
+buzz.set_volume(0)
+buzz.play(-1)
 try:
     while True:
         for _ in range(TPF-1):
@@ -99,12 +102,12 @@ try:
         if c.drawFlag:
             c.drawFlag = False
             draw(c, win)
-        if buzz_playing != (c.sound_timer >= 0):
-            if buzz_playing:
-                buzz.stop()
-            else:
-                buzz.play(-1)
-            buzz_playing = not buzz_playing
+        # if buzz_playing != (c.sound_timer >= 0):
+        #     if buzz_playing:
+        #         buzz.stop()
+        #     else:
+        #         buzz.play(-1)
+        #     buzz_playing = not buzz_playing
         buzz.set_volume(int(c.sound_timer>=1))
         for event in pygame.event.get():
             if event.type == 2: #Key down

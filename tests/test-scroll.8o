@@ -1,0 +1,33 @@
+﻿: main
+	hires
+	loop
+		v0 := key
+		v1 := 110
+		v2 := 0
+		v3 := 10
+		i := thing
+		:macro drawit pln {
+			plane pln
+			sprite v1 v2 15
+			if vf == 1 then
+				sprite v1 v2 15
+		}
+		drawit 1
+		drawit 2
+		v0 += 240
+		i := switch
+		save v0
+		: switch
+		plane 3
+		loop
+			ve := 5
+			delay := ve
+			loop ve := delay if ve != 0 then again
+			scroll-left
+			v3 += 255
+			if v3 != 0 then
+		again
+	again
+	
+: thing
+0x7C 0x82 0xAA 0x82 0x44 0x38 0x10 0x10 0x7C 0xC6 0x82 0x82 0xEE 0x28 0x38
