@@ -21,7 +21,7 @@ SCHIP: Done!
 XO-CHIP
     save V[x] - V[y]    5xy2
     load V[x] - V[y]    5xy3
-    i := long [xxxx]    F000xxxx (4 bytes)
++   i := long [xxxx]    F000xxxx (4 bytes)
 +   plane [x]           Fx01
 	Plane-fearing: clear, sprite, scroll-*
     audio               F002	16 bytes of audio from I
