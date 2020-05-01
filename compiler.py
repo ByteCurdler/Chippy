@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import argparse, os, random
 parser = argparse.ArgumentParser()
 method = parser.add_mutually_exclusive_group(required=True)

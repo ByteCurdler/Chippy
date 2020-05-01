@@ -32,8 +32,8 @@ class XOCHIP:
         self.flags = bytearray(8)
         
         self.plane = 1
-        self.audio = b"\xF8\x78\x78\x3C\x3C\x3C\x1E\x1E" \
-                     b"\x1E\x0F\x0F\x0F\x07\x87\x87\x83" #480 Htz, generated with Octo
+        self.audio = b"\xF8\x3C\x1E\x0F\x07\x83\xE1\xF0" \
+                     b"\xF8\x7C\x3E\x1F\x07\x83\xC1\xE0" #440 Htz, generated with Octo
 
         for i in range(len(fontset)):
             self.memory[i + 80] = fontset[i]
@@ -43,6 +43,12 @@ class XOCHIP:
                 self.memory.append(cartdata[i])
             else:
                 self.memory[i + 512] = cartdata[i]
+    
+    def skip(self):
+        self.pc += 2
+        opcode = self.memory[self.pc] << 8 | self.memory[self.pc + 1]
+        if opcode == 0xF000:
+            self.pc += 2
 
     def cycle(self, delta, noexit=False):
         # Get Opcode
@@ -53,7 +59,11 @@ class XOCHIP:
         if re.fullmatch("00C.", ophex):
             # 00Cx: Scroll the display down x pixels
             amount = int(ophex[3],16) * 128
-            self.gfx = self.gfx[:-amount].rjust(128*64, b"\x00")
+            for plane in (
+                            ([self.gfx] if self.plane & 1 else []) +
+                            ([self.gfx2] if self.plane & 2 else [])):
+                plane[:] = plane[:-amount].rjust(128*64, b"\x00")
+            self.drawFlag = True
         elif ophex == "00E0":
             # 00E0: Clear screen
             for plane in (
@@ -97,15 +107,15 @@ class XOCHIP:
         elif re.fullmatch("3...", ophex):
             # 3xnn: Skips next instruction if V[x] equals [nn]
             if self.V[int(ophex[1],16)] == int(ophex[2:],16):
-                self.pc += 2
+                self.skip()
         elif re.fullmatch("4...", ophex):
             # 4xnn: Skips next instruction if V[x] doesn't equal [nn]
             if self.V[int(ophex[1],16)] != int(ophex[2:],16):
-                self.pc += 2
+                self.skip()
         elif re.fullmatch("5..0", ophex):
             # 5xy0: Skips next instruction if V[x] equals V[y]
             if self.V[int(ophex[1],16)] == self.V[int(ophex[2],16)]:
-                self.pc += 2
+                self.skip()
         elif re.fullmatch("6...", ophex):
             # 6xnn: Set V[x] to [nn]
             self.V[int(ophex[1],16)] = int(ophex[2:],16)
@@ -157,7 +167,7 @@ class XOCHIP:
         elif re.fullmatch("9..0", ophex):
             # 9xy0: Skips next instruction if V[x] doesn't equal V[y]
             if self.V[int(ophex[1],16)] != self.V[int(ophex[2],16)]:
-                self.pc += 2
+                self.skip()
         elif re.fullmatch("A...", ophex):
             # Annn: Set I to [nnn]
             self.I = int(ophex[1:],16)
@@ -204,11 +214,15 @@ class XOCHIP:
         elif re.fullmatch("E.9E", ophex):
             # ExA1: Skips next instruction if the key V[x] is pressed
             if self.V[int(ophex[1],16)] < 16 and self.keys[self.V[int(ophex[1],16)]]:
-                self.pc += 2
+                self.skip()
         elif re.fullmatch("E.A1", ophex):
             # ExA1: Skips next instruction if the key V[x] is not pressed
             if self.V[int(ophex[1],16)] > 15 or not self.keys[self.V[int(ophex[1],16)]]:
-                self.pc += 2
+                self.skip()
+        elif ophex == "F000":
+            # F000xxxx: Set I to xxxx
+            self.pc += 2
+            self.I = self.memory[self.pc] << 8 | self.memory[self.pc + 1]
         elif re.fullmatch("F.01", ophex):
             # Fn01: Set drawing plane to n
             if int(ophex[1],16) > 3:
