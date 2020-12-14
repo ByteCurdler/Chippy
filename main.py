@@ -82,8 +82,8 @@ clock = pygame.time.Clock()
 buzz = pygame.mixer.Sound("buzzer.wav")
 buzz_playing = False
 if c.type in ["SCHIP", "XO-CHIP"]:
-    if os.path.isfile("flags.pkl"):
-        flags = pickle.load(open("flags.pkl", "rb"))
+    if os.path.isfile(filename + ".flags"):
+        flags = pickle.load(open(filename + ".flags", "rb"))
     else:
         flags = bytearray(8)
     c.flags = flags
@@ -124,4 +124,4 @@ except KeyboardInterrupt:
     print("Goodbye!")
 pygame.quit()
 if c.type in ["SCHIP", "XO-CHIP"]:
-    pickle.dump(c.flags, open("flags.pkl", "wb+"))
+    pickle.dump(c.flags, open(filename + ".flags", "wb+"))

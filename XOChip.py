@@ -116,6 +116,18 @@ class XOCHIP:
             # 5xy0: Skips next instruction if V[x] equals V[y]
             if self.V[int(ophex[1],16)] == self.V[int(ophex[2],16)]:
                 self.skip()
+        elif re.fullmatch("5..2", ophex):
+            # 5xy2: Dump V[x]..V[y] into memory, starting at I
+            start = int(ophex[1],16)
+            for i in range(start, int(ophex[2],16)+1):
+                self.memory[self.I + i - start] = self.V[i]
+            self.I += int(ophex[1],16)+1-start
+        elif re.fullmatch("5..3", ophex):
+            # 5xy3: Load memory into V[x]..V[y], starting at I
+            start = int(ophex[1],16)
+            for i in range(start, int(ophex[2],16)+1):
+                self.V[i] = self.memory[self.I + i - start]
+            self.I += int(ophex[1],16)+1-start
         elif re.fullmatch("6...", ophex):
             # 6xnn: Set V[x] to [nn]
             self.V[int(ophex[1],16)] = int(ophex[2:],16)
