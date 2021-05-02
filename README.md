@@ -19,7 +19,7 @@ Most examples from [Octo]
     <td>4</td><td>5</td><td>6</td><td>D</td><td></td><td>Q</td><td>W/↑</td><td>E</td><td>R</td>
   </tr>
   <tr>
-    <td>7</td><td>8</td><td>9</td><td>E</td><td></td><td>A/←</td><td>S/↓</td><td>D/→</td><td>F</td>
+    <td>7</td><td>8</td><td>9</td><td>E/Space</td><td></td><td>A/←</td><td>S/↓</td><td>D/→</td><td>F</td>
   </tr>
   <tr>
     <td>A</td><td>0</td><td>B</td><td>F</td><td></td><td>Z</td><td>X</td><td>C</td><td>V</td>
