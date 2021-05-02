@@ -1,8 +1,8 @@
 # Chippy #
 
-A CHIP-8 interpreter, similar to [Octo](https://johnearnest.github.io/Octo/)
-Most examples from [Octo](https://johnearnest.github.io/Octo/)
+A CHIP-8 interpreter, similar to [Octo]
 
+Most examples from [Octo]
 ## Usage ##
 
 `python3 main.py [.ch8 file]`
@@ -26,3 +26,4 @@ Most examples from [Octo](https://johnearnest.github.io/Octo/)
   </tr>
 </table>
 
+[Octo]: https://johnearnest.github.io/Octo/
